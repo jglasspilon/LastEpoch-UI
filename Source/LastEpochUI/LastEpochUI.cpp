@@ -4,3 +4,4 @@
 #include "Modules/ModuleManager.h"
 
 IMPLEMENT_PRIMARY_GAME_MODULE( FDefaultGameModuleImpl, LastEpochUI, "LastEpochUI" );
+DEFINE_LOG_CATEGORY(LogGame);
