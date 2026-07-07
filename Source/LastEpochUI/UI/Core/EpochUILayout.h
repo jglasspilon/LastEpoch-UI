@@ -19,9 +19,6 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category="Screens")
 	TArray<FScreenInstanceData> ScreensToLoad;
 	
-	UPROPERTY(EditDefaultsOnly, Category="Layers")
-	TArray<FGameplayTag> LayersThatCloseAllOtherLayers;
-	
 	UPROPERTY(VisibleAnywhere, Category="Layers")
 	TMap<FGameplayTag, UEpochUILayer*> Layers;
 	
@@ -29,7 +26,13 @@ protected:
 	TMap<FGameplayTag, UEpochUILayer*> MappedLayersToScreenName;
 	
 	UFUNCTION(BlueprintCallable)
-	void ShowScreen(FGameplayTag ScreenName);
+	void ShowScreen(const FGameplayTag ScreenName) const;
+	
+	UFUNCTION(BlueprintCallable)
+	void HideScreen(const FGameplayTag ScreenName) const;
+	
+	UFUNCTION(BlueprintCallable)
+	void ToggleScreen(const FGameplayTag ScreenName) const;
 	
 	virtual void NativeConstruct() override;
 	void GatherLayers();

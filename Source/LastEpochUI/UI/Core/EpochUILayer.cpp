@@ -27,21 +27,15 @@ void UEpochUILayer::AddScreen(UEpochUIScreen* ScreenToAdd)
 	UE_LOG(LogGame, Log, TEXT("Added screen %s to layer %s"), *ScreenToAdd->GetScreenName().ToString(), *LayerName.ToString())
 }
 
-void UEpochUILayer::ShowScreen(const FGameplayTag ScreenNameToShow)
+void UEpochUILayer::ChangeScreen(const FGameplayTag ScreenName)
 {
-	if (ActiveScreen && ActiveScreen->GetScreenName() == ScreenNameToShow)
+	UEpochUIScreen* NextScreen = LoadedScreens.FindRef(ScreenName);
+	
+	if (!LoadedScreens.Contains(ScreenName))
 	{
-		HideActiveScreen();
+		UE_LOG(LogGame, Warning, TEXT("Failed to change to screen. %s screen has not been loaded on layer %s"), *ScreenName.ToString(), *LayerName.ToString())
 		return;
 	}
-	
-	if (!LoadedScreens.Contains(ScreenNameToShow))
-	{
-		UE_LOG(LogGame, Warning, TEXT("Failed to change to screen. %s screen has not been loaded on layer %s"), *ScreenNameToShow.ToString(), *LayerName.ToString())
-		return;
-	}
-	
-	UEpochUIScreen* NextScreen = LoadedScreens.FindRef(ScreenNameToShow);
 	
 	if (ActiveScreen)
 	{
@@ -51,7 +45,7 @@ void UEpochUILayer::ShowScreen(const FGameplayTag ScreenNameToShow)
 		
 		// Wait for hide to finish
 		ActiveScreen->OnHideFinished.AddUniqueDynamic(this, &UEpochUILayer::OnActiveScreenHidden);
-		ActiveScreen->Hide();
+		ActiveScreen->TriggerHide();
 	}
 	else
 	{
@@ -60,8 +54,43 @@ void UEpochUILayer::ShowScreen(const FGameplayTag ScreenNameToShow)
 		
 		// Wait for show to finish
 		ActiveScreen->OnShowFinished.AddUniqueDynamic(this, &UEpochUILayer::OnActiveScreenShown);
-		ActiveScreen->Show();
+		ActiveScreen->TriggerShow();
 	}
+}
+
+void UEpochUILayer::ShowScreen(const FGameplayTag ScreenName)
+{
+	if (ActiveScreen && ActiveScreen->GetScreenName() == ScreenName)
+	{
+		return;
+	}
+	
+	ChangeScreen(ScreenName);
+}
+
+void UEpochUILayer::ToggleScreen(const FGameplayTag ScreenName)
+{
+	if (ActiveScreen && ActiveScreen->GetScreenName() == ScreenName)
+	{
+		HideScreen();
+		return;
+	}
+	
+	ChangeScreen(ScreenName);
+}
+
+void UEpochUILayer::HideScreen()
+{
+	if (!ActiveScreen)
+	{
+		return;
+	}
+	
+	UE_LOG(LogGame, Log, TEXT("Changing screen on layer %s. From %s to empty"), *LayerName.ToString(), *ActiveScreen->GetScreenName().ToString());
+     		
+    // Wait for hide to finish
+	ActiveScreen->OnHideFinished.AddUniqueDynamic(this, &UEpochUILayer::OnActiveScreenHidden);
+    ActiveScreen->TriggerHide();
 }
 
 void UEpochUILayer::OnActiveScreenHidden()
@@ -78,8 +107,7 @@ void UEpochUILayer::OnActiveScreenHidden()
 		
 		// Wait for show to finish
         ActiveScreen->OnShowFinished.AddUniqueDynamic(this, &UEpochUILayer::OnActiveScreenShown);
-		ActiveScreen->Show();
-		
+		ActiveScreen->TriggerShow();
 	}
 	else
 	{
@@ -97,20 +125,6 @@ void UEpochUILayer::OnActiveScreenShown()
 	// vv-Ability to add logic on screen shown finished in the future-vv //
 }
 
-void UEpochUILayer::HideActiveScreen()
-{
-	if (!ActiveScreen)
-	{
-		return;
-	}
-	
-	UE_LOG(LogGame, Log, TEXT("Changing screen on layer %s. From %s to empty"), *LayerName.ToString(), *ActiveScreen->GetScreenName().ToString());
-     		
-    // Wait for hide to finish
-	ActiveScreen->OnHideFinished.AddUniqueDynamic(this, &UEpochUILayer::OnActiveScreenHidden);
-    ActiveScreen->Hide();
-}
-
 void UEpochUILayer::OnSlotAdded(UPanelSlot* InSlot)
 {
 	Super::OnSlotAdded(InSlot);
@@ -122,3 +136,5 @@ void UEpochUILayer::OnSlotAdded(UPanelSlot* InSlot)
         OverlaySlot->SetVerticalAlignment(VAlign_Fill);
 	}
 }
+
+

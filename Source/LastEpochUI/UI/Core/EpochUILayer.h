@@ -18,8 +18,9 @@ class LASTEPOCHUI_API UEpochUILayer : public UOverlay
 public:
 	FGameplayTag GetLayerName() const { return LayerName; }
 	void AddScreen(UEpochUIScreen* ScreenToAdd);
-	void ShowScreen(const FGameplayTag ScreenNameToShow);
-	void HideActiveScreen();
+	void ShowScreen(const FGameplayTag ScreenName);
+	void ToggleScreen(const FGameplayTag ScreenName);
+	void HideScreen();
 	
 protected:
 	UPROPERTY(EditAnywhere, Category="Layer")
@@ -41,4 +42,5 @@ protected:
 	void OnActiveScreenHidden();
 	
 	virtual void OnSlotAdded(UPanelSlot* InSlot) override;
+	void ChangeScreen(const FGameplayTag ScreenName);
 };

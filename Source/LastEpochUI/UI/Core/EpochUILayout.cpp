@@ -70,7 +70,7 @@ void UEpochUILayout::LoadScreens(const TArray<FScreenInstanceData>& ToLoad)
 	}
 }
 
-void UEpochUILayout::ShowScreen(FGameplayTag ScreenName)
+void UEpochUILayout::ShowScreen(const FGameplayTag ScreenName) const
 {
 	UEpochUILayer* Layer = MappedLayersToScreenName.FindRef(ScreenName);
 	if (!Layer)
@@ -79,16 +79,30 @@ void UEpochUILayout::ShowScreen(FGameplayTag ScreenName)
 		return;
 	}
 	
-	if (LayersThatCloseAllOtherLayers.Contains(Layer->GetLayerName()))
+	//@todo: change to ShowScreen once buttons are removed and the screens are controlled by SubModule
+	Layer->ToggleScreen(ScreenName);
+}
+
+void UEpochUILayout::HideScreen(const FGameplayTag ScreenName) const
+{
+	UEpochUILayer* Layer = MappedLayersToScreenName.FindRef(ScreenName);
+	if (!Layer)
 	{
-		for (const TPair<FGameplayTag, UEpochUILayer*>& LayerToClose : Layers)
-		{
-			if (LayerToClose.Value->GetLayerName() == Layer->GetLayerName())
-				continue;
-			
-			LayerToClose.Value->HideActiveScreen();
-		}
+		UE_LOG(LogGame, Error, TEXT("Failed to Show screen %s. Name not recognized."), *ScreenName.ToString());
+		return;
 	}
 	
-	Layer->ShowScreen(ScreenName);
+	Layer->HideScreen();
+}
+
+void UEpochUILayout::ToggleScreen(const FGameplayTag ScreenName) const
+{
+	UEpochUILayer* Layer = MappedLayersToScreenName.FindRef(ScreenName);
+	if (!Layer)
+	{
+		UE_LOG(LogGame, Error, TEXT("Failed to Show screen %s. Name not recognized."), *ScreenName.ToString());
+		return;
+	}
+	
+	Layer->ToggleScreen(ScreenName);
 }

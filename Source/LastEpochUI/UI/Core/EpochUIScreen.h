@@ -7,6 +7,7 @@
 #include "Blueprint/UserWidget.h"
 #include "EpochUIScreen.generated.h"
 
+class UEpochUIScreenRule;
 struct FScreenInstanceData;
 struct FGameplayTag;
 
@@ -18,31 +19,45 @@ class LASTEPOCHUI_API UEpochUIScreen : public UUserWidget
 	GENERATED_BODY()
 	
 public:
-	UPROPERTY(BlueprintAssignable, EditAnywhere)
+	UPROPERTY(BlueprintAssignable)
 	FScreenTransitionEvent OnShowFinished;
 	
-	UPROPERTY(BlueprintAssignable, EditAnywhere)
+	UPROPERTY(BlueprintAssignable)
 	FScreenTransitionEvent OnHideFinished;
 	
 	UFUNCTION(BlueprintPure)
 	FGameplayTag GetScreenName() const { return ScreenName; }
 	
-	UFUNCTION(BlueprintCallable)
-	void SetScreenName(const FGameplayTag NewScreenName) { ScreenName = NewScreenName; }
-	
-	UFUNCTION(BlueprintNativeEvent)
-	void Show();
-	
-	UFUNCTION(BlueprintCallable)
-	void BroadcastOnShowFinished();
-	
-	UFUNCTION(BlueprintNativeEvent)
-	void Hide();
-	
-	UFUNCTION(BlueprintCallable)
-	void BroadcastOnHideFinished();
+	void TriggerShow();
+	void TriggerHide();
 	
 protected:
-	UPROPERTY(EditAnywhere, Category="Screen")
+	UPROPERTY(EditDefaultsOnly, Category="Screen")
 	FGameplayTag ScreenName;
+	
+	UPROPERTY(EditDefaultsOnly, Category="Screen")
+	TArray<TSubclassOf<UEpochUIScreenRule>> OnOpenRules;
+	
+	UPROPERTY()
+	TArray<TObjectPtr<UEpochUIScreenRule>> OnOpenRuleInstances;
+	
+	UPROPERTY()
+	TArray<TObjectPtr<UEpochUIScreenRule>> OnCloseRuleInstances;
+	
+	UPROPERTY(EditDefaultsOnly, Category="Screen")
+	TArray<TSubclassOf<UEpochUIScreenRule>> OnCloseRules;
+	
+	UFUNCTION(BlueprintNativeEvent)
+    void Show();
+    
+    UFUNCTION(BlueprintCallable)
+    void BroadcastOnShowFinished() const;
+    
+    UFUNCTION(BlueprintNativeEvent)
+    void Hide();
+    
+    UFUNCTION(BlueprintCallable)
+    void BroadcastOnHideFinished() const;
+	
+	virtual void NativeConstruct() override;
 };
