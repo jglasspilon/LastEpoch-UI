@@ -14,7 +14,4 @@ struct FScreenInstanceData
 	
 	UPROPERTY(EditAnywhere)
 	FGameplayTag OwningLayer;
-	
-	UPROPERTY(EditAnywhere)
-	FGameplayTag ScreenName;
 };

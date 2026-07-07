@@ -23,8 +23,3 @@ void UEpochUIScreen::BroadcastOnHideFinished()
 {
 	OnHideFinished.Broadcast();
 }
-
-void UEpochUIScreen::InitializeScreen(const FScreenInstanceData& ScreenData)
-{
-	ScreenName = ScreenData.ScreenName;
-}

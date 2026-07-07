@@ -42,9 +42,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void BroadcastOnHideFinished();
 	
-	void InitializeScreen(const FScreenInstanceData& ScreenData);
-	
 protected:
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(EditAnywhere, Category="Screen")
 	FGameplayTag ScreenName;
 };

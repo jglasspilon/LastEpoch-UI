@@ -31,6 +31,7 @@ void UEpochUILayout::GatherLayers()
 
 void UEpochUILayout::LoadScreens(const TArray<FScreenInstanceData>& ToLoad)
 {
+	int32 index = 0;
 	UWorld* World = GetWorld();
 	
 	if (!World)
@@ -41,37 +42,31 @@ void UEpochUILayout::LoadScreens(const TArray<FScreenInstanceData>& ToLoad)
 	
 	for (const FScreenInstanceData& ScreenData : ToLoad)
 	{
+		index ++;
 		if (!ScreenData.ScreenTypeToInstantiate)
 		{
-			UE_LOG(LogGame, Error, TEXT("Failed to load screen %s in UI Layout. No World Exists on Load attempt."), *ScreenData.ScreenName.ToString())
-			continue;
-		}
-		
-		if (MappedLayersToScreenName.Contains(ScreenData.ScreenName))
-		{
-			UE_LOG(LogGame, Warning, TEXT("Attempting to load duplicate screen %s. Only a single instance of each screen should exist."), *ScreenData.ScreenName.ToString())
+			UE_LOG(LogGame, Error, TEXT("Failed to load screen %i in UI Layout. No screen type selected."), index)
 			continue;
 		}
 		
 		UEpochUILayer* Layer = Layers.FindRef(ScreenData.OwningLayer);
 		if (!Layer)
 		{
-			UE_LOG(LogGame, Error, TEXT("Failed to load screen %s in UI Layout. Parent layer %s not found in UI Layout."), *ScreenData.ScreenName.ToString(), *ScreenData.OwningLayer.ToString());
+			UE_LOG(LogGame, Error, TEXT("Failed to load screen %i in UI Layout. Parent layer %s not found in UI Layout."), index, *ScreenData.OwningLayer.ToString());
 			continue;
 		}
 		
-		UEpochUIScreen* NewScreen = CreateWidget<UEpochUIScreen>(World, ScreenData.ScreenTypeToInstantiate, FName(ScreenData.ScreenName.ToString()));
+		UEpochUIScreen* NewScreen = CreateWidget<UEpochUIScreen>(World, ScreenData.ScreenTypeToInstantiate);
 		if (!NewScreen)
 		{
-			UE_LOG(LogGame, Error, TEXT("Failed to load screen %s in UI Layout. Loaded null class."), *ScreenData.ScreenName.ToString())
+			UE_LOG(LogGame, Error, TEXT("Failed to load screen %i in UI Layout. Loaded null class."), index)
 			continue;
 		}
 		
-		NewScreen->SetScreenName(ScreenData.ScreenName);
 		Layer->AddScreen(NewScreen);
 		MappedLayersToScreenName.Add(NewScreen->GetScreenName(), Layer);
 		
-		UE_LOG(LogGame, Log, TEXT("Successfully loaded screen %s to layer %s."), *ScreenData.ScreenName.ToString(), *Layer->GetLayerName().ToString())
+		UE_LOG(LogGame, Log, TEXT("Successfully loaded screen %s to layer %s."), *NewScreen->GetScreenName().ToString(), *Layer->GetLayerName().ToString())
 	}
 }
 
