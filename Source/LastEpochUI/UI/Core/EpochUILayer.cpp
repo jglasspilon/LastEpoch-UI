@@ -39,6 +39,12 @@ void UEpochUILayer::ChangeScreen(const FGameplayTag ScreenName)
 	
 	if (ActiveScreen)
 	{
+		if (ActiveScreen->IsAnimating())
+		{
+			UE_LOG(LogGame, Warning, TEXT("Can't change screen, currently active screen is already changing."));
+			return;
+		}
+		
 		UE_LOG(LogGame, Log, TEXT("Changing screen on layer %s. From %s to %s"), *LayerName.ToString(), *ActiveScreen->GetScreenName().ToString(), *NextScreen->GetScreenName().ToString());
 		
 		PendingScreen = NextScreen;
@@ -83,6 +89,12 @@ void UEpochUILayer::HideScreen()
 {
 	if (!ActiveScreen)
 	{
+		return;
+	}
+	
+	if (ActiveScreen->IsAnimating())
+	{
+		UE_LOG(LogGame, Warning, TEXT("Can't hide screen, currently active screen is already changing."));
 		return;
 	}
 	

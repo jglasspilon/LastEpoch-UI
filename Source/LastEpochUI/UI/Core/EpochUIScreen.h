@@ -28,12 +28,25 @@ public:
 	UFUNCTION(BlueprintPure)
 	FGameplayTag GetScreenName() const { return ScreenName; }
 	
+	bool IsAnimating() const { return GetWorld()->GetTimerManager().IsTimerActive(AnimTimerHandle); }
 	void TriggerShow();
 	void TriggerHide();
 	
 protected:
 	UPROPERTY(EditDefaultsOnly, Category="Screen")
 	FGameplayTag ScreenName;
+	
+	UPROPERTY(EditDefaultsOnly, Category="Screen")
+	bool bUseBlueprintTransitionLogic;
+	
+	UPROPERTY(EditDefaultsOnly, Category="Screen")
+	FName ShowAnimationName;
+	
+	UPROPERTY(EditDefaultsOnly, Category="Screen")
+	FName HideAnimationName;
+	
+	UPROPERTY()
+	TMap<FName, UWidgetAnimation*> Animations;
 	
 	UPROPERTY(EditDefaultsOnly, Category="Screen")
 	TArray<TSubclassOf<UEpochUIScreenRule>> OnOpenRules;
@@ -47,17 +60,20 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category="Screen")
 	TArray<TSubclassOf<UEpochUIScreenRule>> OnCloseRules;
 	
+	FTimerHandle AnimTimerHandle;
+	
 	UFUNCTION(BlueprintNativeEvent)
     void Show();
     
     UFUNCTION(BlueprintCallable)
-    void BroadcastOnShowFinished() const;
+    void BroadcastOnShowFinished();
     
     UFUNCTION(BlueprintNativeEvent)
     void Hide();
     
     UFUNCTION(BlueprintCallable)
-    void BroadcastOnHideFinished() const;
+    void BroadcastOnHideFinished();
 	
 	virtual void NativeConstruct() override;
+	void CacheAnimations();
 };
