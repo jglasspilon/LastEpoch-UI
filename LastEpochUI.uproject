@@ -8,6 +8,11 @@
 			"Name": "LastEpochUI",
 			"Type": "Runtime",
 			"LoadingPhase": "Default"
+		},
+		{
+			"Name": "LastEpochUIEditor",
+			"Type": "Editor",
+			"LoadingPhase": "Default"
 		}
 	],
 	"Plugins": [
@@ -19,7 +24,7 @@
 			]
 		},
 		{
-			"Name": "ModelViewViewModelPreview",
+			"Name": "ModelViewViewModel",
 			"Enabled": true
 		}
 	]

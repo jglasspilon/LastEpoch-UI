@@ -9,7 +9,6 @@
 
 class UEpochUIScreenRule;
 struct FScreenInstanceData;
-struct FGameplayTag;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FScreenTransitionEvent);
 
@@ -25,9 +24,19 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FScreenTransitionEvent OnHideFinished;
 	
+	UPROPERTY(EditDefaultsOnly, Category="Screen")
+    FName ShowAnimationName;
+    
+    UPROPERTY(EditDefaultsOnly, Category="Screen")
+    FName HideAnimationName;
+	
 	UFUNCTION(BlueprintPure)
 	FGameplayTag GetScreenName() const { return ScreenName; }
 	
+	UFUNCTION(BlueprintCallable)
+	TMap<FName, UWidgetAnimation*> GetAnimations() { return Animations; }
+	
+	void CacheAnimations();
 	bool IsAnimating() const { return GetWorld()->GetTimerManager().IsTimerActive(AnimTimerHandle); }
 	void TriggerShow();
 	void TriggerHide();
@@ -38,12 +47,6 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly, Category="Screen")
 	bool bUseBlueprintTransitionLogic;
-	
-	UPROPERTY(EditDefaultsOnly, Category="Screen")
-	FName ShowAnimationName;
-	
-	UPROPERTY(EditDefaultsOnly, Category="Screen")
-	FName HideAnimationName;
 	
 	UPROPERTY()
 	TMap<FName, UWidgetAnimation*> Animations;
@@ -75,5 +78,4 @@ protected:
     void BroadcastOnHideFinished();
 	
 	virtual void NativeConstruct() override;
-	void CacheAnimations();
 };
