@@ -10,10 +10,20 @@
 struct FScreenInstanceData;
 class UEpochUILayer;
 
-UCLASS(Blueprintable)
+UCLASS(Blueprintable, Abstract)
 class LASTEPOCHUI_API UEpochUILayout : public UUserWidget
 {
 	GENERATED_BODY()
+	
+public:
+	UFUNCTION(BlueprintCallable)
+    void ShowScreen(const FGameplayTag ScreenName) const;
+    
+    UFUNCTION(BlueprintCallable)
+    void HideScreen(const FGameplayTag ScreenName) const;
+    
+    UFUNCTION(BlueprintCallable)
+    void ToggleScreen(const FGameplayTag ScreenName) const;
 	
 protected: 
 	UPROPERTY(EditDefaultsOnly, Category="Screens")
@@ -24,15 +34,6 @@ protected:
 	
 	UPROPERTY(VisibleAnywhere, Category="Layers")
 	TMap<FGameplayTag, UEpochUILayer*> MappedLayersToScreenName;
-	
-	UFUNCTION(BlueprintCallable)
-	void ShowScreen(const FGameplayTag ScreenName) const;
-	
-	UFUNCTION(BlueprintCallable)
-	void HideScreen(const FGameplayTag ScreenName) const;
-	
-	UFUNCTION(BlueprintCallable)
-	void ToggleScreen(const FGameplayTag ScreenName) const;
 	
 	virtual void NativeConstruct() override;
 	void GatherLayers();

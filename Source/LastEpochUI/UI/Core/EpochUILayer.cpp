@@ -92,12 +92,6 @@ void UEpochUILayer::HideScreen()
 		return;
 	}
 	
-	if (ActiveScreen->IsAnimating())
-	{
-		UE_LOG(LogGame, Warning, TEXT("Can't hide screen, currently active screen is already changing."));
-		return;
-	}
-	
 	UE_LOG(LogGame, Log, TEXT("Changing screen on layer %s. From %s to empty"), *LayerName.ToString(), *ActiveScreen->GetScreenName().ToString());
      		
     // Wait for hide to finish
