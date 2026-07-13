@@ -7,6 +7,7 @@
 #include "Blueprint/UserWidget.h"
 #include "EpochUIScreen.generated.h"
 
+class UEpochUILayer;
 class UEpochUIScreenRule;
 struct FScreenInstanceData;
 
@@ -37,6 +38,7 @@ public:
 	TMap<FName, UWidgetAnimation*> GetAnimations() { return Animations; }
 	
 	void CacheAnimations();
+	void AttachToLayer(UEpochUILayer* Layer) { ParentLayer = Layer; }
 	bool IsAnimating() const { return GetWorld()->GetTimerManager().IsTimerActive(AnimTimerHandle); }
 	void TriggerShow();
 	void TriggerHide();
@@ -44,6 +46,9 @@ public:
 protected:
 	UPROPERTY(EditDefaultsOnly, Category="Screen")
 	FGameplayTag ScreenName;
+	
+	UPROPERTY(BlueprintReadOnly)
+	UEpochUILayer* ParentLayer;
 	
 	UPROPERTY(EditDefaultsOnly, Category="Screen")
 	bool bUseBlueprintTransitionLogic;

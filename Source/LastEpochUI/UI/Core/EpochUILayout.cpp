@@ -63,6 +63,7 @@ void UEpochUILayout::LoadScreens(const TArray<FScreenInstanceData>& ToLoad)
 			continue;
 		}
 		
+		NewScreen->AttachToLayer(Layer);
 		Layer->AddScreen(NewScreen);
 		MappedLayersToScreenName.Add(NewScreen->GetScreenName(), Layer);
 		
@@ -88,7 +89,19 @@ void UEpochUILayout::HideScreen(const FGameplayTag ScreenName) const
 	UEpochUILayer* Layer = MappedLayersToScreenName.FindRef(ScreenName);
 	if (!Layer)
 	{
-		UE_LOG(LogGame, Error, TEXT("Failed to Show screen %s. Name not recognized."), *ScreenName.ToString());
+		UE_LOG(LogGame, Error, TEXT("Failed to Hide screen %s. Name not recognized."), *ScreenName.ToString());
+		return;
+	}
+	
+	Layer->HideScreen();
+}
+
+void UEpochUILayout::HideActiveScreenOfLayer(const FGameplayTag LayerName) const
+{
+	UEpochUILayer* Layer = Layers.FindRef(LayerName);
+	if (!Layer)
+	{
+		UE_LOG(LogGame, Error, TEXT("Failed to Hide active screen for layer %s. Name not recognized."), *LayerName.ToString());
 		return;
 	}
 	
@@ -105,4 +118,17 @@ void UEpochUILayout::ToggleScreen(const FGameplayTag ScreenName) const
 	}
 	
 	Layer->ToggleScreen(ScreenName);
+}
+
+bool UEpochUILayout::IsScreenActive(const FGameplayTag ScreenName) const
+{
+	UEpochUILayer* Layer = MappedLayersToScreenName.FindRef(ScreenName);
+	
+	if (!Layer)
+	{
+		UE_LOG(LogGame, Error, TEXT("Failed to find screen %s. Name not recognized."), *ScreenName.ToString());
+		return false;
+	}
+	
+	return Layer->IsScreenActive(ScreenName);
 }

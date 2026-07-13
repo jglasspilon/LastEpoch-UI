@@ -99,6 +99,11 @@ void UEpochUILayer::HideScreen()
     ActiveScreen->TriggerHide();
 }
 
+bool UEpochUILayer::IsScreenActive(const FGameplayTag ScreenName)
+{
+	return ActiveScreen && ActiveScreen->GetScreenName() == ScreenName;
+}
+
 void UEpochUILayer::OnActiveScreenHidden()
 {
 	if (ActiveScreen)

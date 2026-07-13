@@ -21,9 +21,23 @@ public:
     
     UFUNCTION(BlueprintCallable)
     void HideScreen(const FGameplayTag ScreenName) const;
-    
-    UFUNCTION(BlueprintCallable)
+	
+	UFUNCTION(BlueprintCallable)
+	void HideActiveScreenOfLayer(FGameplayTag LayerName) const;
+
+	UFUNCTION(BlueprintCallable)
     void ToggleScreen(const FGameplayTag ScreenName) const;
+	
+	UFUNCTION(BlueprintCallable)
+	bool IsScreenActive(const FGameplayTag ScreenName) const;
+
+	UFUNCTION(BlueprintCallable)
+	TArray<FGameplayTag> GetLayerNames() const
+	{
+		TArray<FGameplayTag> Keys;
+		Layers.GetKeys(Keys);
+		return Keys;
+	}
 	
 protected: 
 	UPROPERTY(EditDefaultsOnly, Category="Screens")

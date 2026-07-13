@@ -16,11 +16,14 @@ class LASTEPOCHUI_API UEpochUILayer : public UOverlay
 	GENERATED_BODY()
 	
 public:
+	UFUNCTION(BlueprintCallable)
 	FGameplayTag GetLayerName() const { return LayerName; }
+	
 	void AddScreen(UEpochUIScreen* ScreenToAdd);
 	void ShowScreen(const FGameplayTag ScreenName);
 	void ToggleScreen(const FGameplayTag ScreenName);
 	void HideScreen();
+	bool IsScreenActive(const FGameplayTag ScreenName);
 	
 protected:
 	UPROPERTY(EditAnywhere, Category="Layer")

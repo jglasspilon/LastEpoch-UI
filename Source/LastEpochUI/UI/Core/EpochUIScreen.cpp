@@ -2,6 +2,8 @@
 
 
 #include "EpochUIScreen.h"
+
+#include "EpochUIManagementSubsystem.h"
 #include "EpochUIScreenRule.h"
 #include "MovieScene.h"
 #include "Animation/WidgetAnimation.h"
@@ -12,15 +14,27 @@ void UEpochUIScreen::NativeConstruct()
 	Super::NativeConstruct();
 	CacheAnimations();
 	
+	UEpochUIManagementSubsystem* UIManager = GetGameInstance()->GetSubsystem<UEpochUIManagementSubsystem>();
+	
+	if (!UIManager)
+	{
+		UE_LOG(LogGame, Error, TEXT("Failed to find UI Management SubSystem for screen %s. Screen rules will not be recognized."), *ScreenName.ToString());
+		return;
+	}
+	
 	for (const TSubclassOf<UEpochUIScreenRule>& RuleClass : OnOpenRules)
 	{
 		UEpochUIScreenRule* NewInstance = NewObject<UEpochUIScreenRule>(this, RuleClass);
+		NewInstance->PassUIManager(UIManager);
+		NewInstance->AttachToScreen(this);
 		OnOpenRuleInstances.Add(NewInstance);
 	}
 	
 	for (const TSubclassOf<UEpochUIScreenRule>& RuleClass : OnCloseRules)
 	{
 		UEpochUIScreenRule* NewInstance = NewObject<UEpochUIScreenRule>(this, RuleClass);
+		NewInstance->PassUIManager(UIManager);
+		NewInstance->AttachToScreen(this);
 		OnCloseRuleInstances.Add(NewInstance);
 	}
 }

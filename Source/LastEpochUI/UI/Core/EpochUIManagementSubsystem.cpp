@@ -18,6 +18,46 @@ void UEpochUIManagementSubsystem::Initialize(FSubsystemCollectionBase& Collectio
 	UISettings->UIInputMappingContext.LoadAsync(FLoadSoftObjectPathAsyncDelegate::CreateUObject(this, &ThisClass::OnMappingContextLoaded));
 }
 
+void UEpochUIManagementSubsystem::ShowScreen(const FGameplayTag ScreenName) const
+{
+	if (!UILayoutInstance)
+		return;
+	
+	UILayoutInstance->ShowScreen(ScreenName);
+}
+
+void UEpochUIManagementSubsystem::HideScreen(const FGameplayTag ScreenName) const
+{
+	if (!UILayoutInstance)
+		return;
+	
+	UILayoutInstance->HideScreen(ScreenName);
+}
+
+void UEpochUIManagementSubsystem::HideActiveScreenOfLayer(const FGameplayTag LayerName) const
+{
+	if (!UILayoutInstance)
+		return;
+	
+	UILayoutInstance->HideActiveScreenOfLayer(LayerName);
+}
+
+bool UEpochUIManagementSubsystem::IsScreenActive(const FGameplayTag ScreenName) const
+{
+	if (!UILayoutInstance)
+		return false;
+	
+	return UILayoutInstance->IsScreenActive(ScreenName);
+}
+
+TArray<FGameplayTag> UEpochUIManagementSubsystem::GetLayerNames() const
+{
+	if (!UILayoutInstance)
+		return TArray<FGameplayTag>();
+	
+	return UILayoutInstance->GetLayerNames();
+}
+
 void UEpochUIManagementSubsystem::OnUILayoutLoaded(const FSoftObjectPath& SoftObjectPath, UObject* LoadedObject)
 {
 	if (!LoadedObject)
@@ -47,7 +87,7 @@ void UEpochUIManagementSubsystem::OnUILayoutLoaded(const FSoftObjectPath& SoftOb
 	BindInputs(PC);
 }
 
-void UEpochUIManagementSubsystem::OnMappingContextLoaded(const FSoftObjectPath& SoftObjectPath, UObject* LoadedObject)
+void UEpochUIManagementSubsystem::OnMappingContextLoaded(const FSoftObjectPath& SoftObjectPath, UObject* LoadedObject) const
 {
 	if (!LoadedObject)
 	{
