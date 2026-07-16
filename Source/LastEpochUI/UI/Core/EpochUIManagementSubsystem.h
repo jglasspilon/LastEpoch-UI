@@ -33,6 +33,12 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Epoch UI")
 	TArray<FGameplayTag> GetLayerNames() const;
 	
+	UFUNCTION(BlueprintCallable, Category="Epoch UI")
+	void EnableMenuToggling() { CanToggleMenus = true; }
+	
+	UFUNCTION(BlueprintCallable, Category="Epoch UI")
+	void DisableMenuToggling() { CanToggleMenus = false; }
+	
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 	
 protected:
@@ -41,6 +47,8 @@ protected:
 	
 	UPROPERTY()
 	TMap<TObjectPtr<UInputAction>, FGameplayTag> ScreenInputActionMap;
+	
+	bool CanToggleMenus = true;
 	
 	void OnUILayoutLoaded(const FSoftObjectPath& SoftObjectPath, UObject* LoadedObject);
 	void OnMappingContextLoaded(const FSoftObjectPath& SoftObjectPath, UObject* LoadedObject) const;

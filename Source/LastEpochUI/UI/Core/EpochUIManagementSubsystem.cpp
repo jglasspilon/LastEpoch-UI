@@ -140,6 +140,12 @@ void UEpochUIManagementSubsystem::BindInputs(const APlayerController* PC)
 
 void UEpochUIManagementSubsystem::HandleScreenInput(const FInputActionInstance& Instance)
 {
+	if (!CanToggleMenus)
+	{
+		UE_LOG(LogGame, Log, TEXT("Menu toggling currently disabled."));
+		return;
+	}
+	
 	const UInputAction* Action = Instance.GetSourceAction();
 	UILayoutInstance->ToggleScreen(ScreenInputActionMap.FindRef(Action));
 }

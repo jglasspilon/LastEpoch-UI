@@ -20,9 +20,17 @@ public:
 	FGameplayTag GetLayerName() const { return LayerName; }
 	
 	void AddScreen(UEpochUIScreen* ScreenToAdd);
+	
+	UFUNCTION(BlueprintCallable, Category="Epoch UI")
 	void ShowScreen(const FGameplayTag ScreenName);
+	
+	UFUNCTION(BlueprintCallable, Category="Epoch UI")
 	void ToggleScreen(const FGameplayTag ScreenName);
+	
+	UFUNCTION(BlueprintCallable, Category="Epoch UI")
 	void HideScreen();
+	
+	UFUNCTION(BlueprintCallable, Category="Epoch UI")
 	bool IsScreenActive(const FGameplayTag ScreenName);
 	
 protected:
